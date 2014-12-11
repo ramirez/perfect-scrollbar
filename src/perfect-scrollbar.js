@@ -562,6 +562,7 @@
           }
         }
         function shouldHandle(e) {
+          if(e.target.draggable) {return false;}
           var event = e.originalEvent;
           if (event.targetTouches && event.targetTouches.length === 1) {
             return true;
