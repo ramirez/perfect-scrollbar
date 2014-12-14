@@ -507,6 +507,18 @@
             breakingProcess = null,
             inGlobalTouch = false;
 
+        function shouldHandle(e) {
+          if(e.target.draggable) {return false;}
+          var event = e.originalEvent;
+          if (event.targetTouches && event.targetTouches.length === 1) {
+            return true;
+          }
+          if (event.pointerType && event.pointerType !== 'mouse') {
+            return true;
+          }
+          return false;
+        }
+
         $(window).bind("touchstart" + eventClassName, function (e) {
           inGlobalTouch = true;
         });
@@ -515,6 +527,8 @@
         });
 
         $this.bind("touchstart" + eventClassName, function (e) {
+          if(!shouldHandle(e)){return;}
+
           var touch = e.originalEvent.targetTouches[0];
 
           startCoords.pageX = touch.pageX;
@@ -529,7 +543,7 @@
           e.stopPropagation();
         });
         $this.bind("touchmove" + eventClassName, function (e) {
-          if (!inGlobalTouch && e.originalEvent.targetTouches.length === 1) {
+          if (!inGlobalTouch && e.originalEvent.targetTouches.length === 1 && shouldHandle(e)) {
             var touch = e.originalEvent.targetTouches[0];
 
             var currentCoords = {};
